@@ -1,7 +1,7 @@
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 
-import Welcome from './screens/Welcome';
+import SignIn from './screens/SignIn';
 import SignUp from './screens/SignUp';
 
 export default function App() {

@@ -71,7 +71,7 @@ const StyledButton = styled.TouchableOpacity`
     margin-vertical: 5px;
     height: 45px;
     align-items: center;
-    
+
     ${(props) => props.google == true && `
         flex-direction: row;
         justify-content: center;
@@ -136,12 +136,14 @@ import { processFontFamily } from "expo-font";
 
 
 interface MyFormValues {
+    fullName: string;
     email: string;
     password: string;
+    confirmPassword: string;
   }
 
 const SignUp: FunctionComponent = () => {
-    const initialValues: MyFormValues = { email: '', password:'' };
+    const initialValues: MyFormValues = { fullName:'', email: '', password:'', confirmPassword:'' };
     return(
         <>
             <StatusBar style="light"/>
@@ -152,16 +154,19 @@ const SignUp: FunctionComponent = () => {
                 <BottomSection>
                     <BigText>
                     Join to MeetMe
-                    </BigText>
-                    <SmallText>
-                    Account Sign Up
-                    </SmallText>
-                
+                    </BigText>                
                     <Formik
-                    initialValues={{ email: '',password: '' }}
+                    initialValues={{ fullName:'', email: '',password: '',confirmPassword: '' }}
                     onSubmit={values => console.log(values)}>
                         {({ handleChange, handleBlur, handleSubmit, values }) => (
                             <StyledForm>
+                                <StyledInputLabel>Full Name </StyledInputLabel>
+                                <TextInput
+                                style={styles.input}
+                                onChangeText={handleChange('fullName')}
+                                onBlur={handleBlur('fullName')}
+                                value={values.fullName}
+                                />
                                 <StyledInputLabel>Email </StyledInputLabel>
                                 <TextInput
                                 style={styles.input}
@@ -169,43 +174,31 @@ const SignUp: FunctionComponent = () => {
                                 onBlur={handleBlur('email')}
                                 value={values.email}
                                 />
-                                <TextInput
-                                style={styles.input}
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                                />
-                                <TextInput
-                                style={styles.input}
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                                />
-                                <StyledInputLabel>Password</StyledInputLabel>
+                                <StyledInputLabel>Password </StyledInputLabel>
                                 <TextInput
                                 style={styles.input}
                                 onChangeText={handleChange('password')}
                                 onBlur={handleBlur('password')}
-                                secureTextEntry={true}
                                 value={values.password}
+                                />
+                                <StyledInputLabel>Confirm Password </StyledInputLabel>
+                                <TextInput
+                                style={styles.input}
+                                onChangeText={handleChange('confirmPassword')}
+                                onBlur={handleBlur('confirmPassword')}
+                                value={values.confirmPassword}
                                 />
                                 <StyledButton onPress={handleSubmit}>
                                     <ButtonText>
-                                        Login
+                                        Sign Up
                                     </ButtonText>
                                 </StyledButton>
                                 <MsgBox>...</MsgBox>
                                 <Line/>
-                                <StyledButton google={true} onPress={handleSubmit}>
-                                    <Fontisto name="google" color={'#85c6d8'}size={25}/>
-                                    <ButtonText google={true}>
-                                        Sign in with Google
-                                    </ButtonText>
-                                </StyledButton>
-                                <ExtraText>Don't have an account already?</ExtraText>
+                                <ExtraText>already have an account?</ExtraText>
                                 <StyledButton signup={true} onPress={handleSubmit}>
                                     <ButtonText signup={true}>
-                                        Sign Up
+                                        Sign in
                                     </ButtonText>
                                 </StyledButton>
                                </StyledForm>
