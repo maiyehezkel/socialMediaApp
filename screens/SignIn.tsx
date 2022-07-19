@@ -119,6 +119,20 @@ const ExtraText = styled.Text`
     color:white;
     text-align: center;
 `;
+const Avatar = styled.Image`
+    width:100px;
+    height:100px;
+    margin:auto;
+    border-radios: 50px;
+    border-width: 2px;
+    border-color: black;
+    margin-bottom: 10px;
+    margin-top:10px;
+`;
+const WelcomeImage = styled.Image`
+    height: 50%;
+    min-width:100%;
+`;
 const styles = StyleSheet.create({
     input: {
         padding: 1,
@@ -142,7 +156,7 @@ interface MyFormValues {
     password: string;
   }
 
-const Welcome: FunctionComponent = () => {
+const SignIn: FunctionComponent = ({navigation}) => {
     const initialValues: MyFormValues = { email: '', password:'' };
     return(
         <>
@@ -161,7 +175,11 @@ const Welcome: FunctionComponent = () => {
                 
                     <Formik
                     initialValues={{ email: '',password: '' }}
-                    onSubmit={values => console.log(values)}>
+                    onSubmit={(values) => {
+                        console.log(values);
+                        navigation.navigate('Welcome')
+                        
+                    }}>
                         {({ handleChange, handleBlur, handleSubmit, values }) => (
                             <StyledForm>
                                 <StyledInputLabel>Email </StyledInputLabel>
@@ -185,6 +203,7 @@ const Welcome: FunctionComponent = () => {
                                     </ButtonText>
                                 </StyledButton>
                                 <MsgBox>...</MsgBox>
+                                
                                 <Line/>
                                 <StyledButton google={true} onPress={handleSubmit}>
                                     <Fontisto name="google" color={'#85c6d8'}size={25}/>
@@ -193,7 +212,7 @@ const Welcome: FunctionComponent = () => {
                                     </ButtonText>
                                 </StyledButton>
                                 <ExtraText>Don't have an account already?</ExtraText>
-                                <StyledButton signup={true} onPress={handleSubmit}>
+                                <StyledButton signup={true} onPress={()=>navigation.navigate('SignUp')}>
                                     <ButtonText signup={true}>
                                         Sign Up
                                     </ButtonText>
@@ -209,4 +228,4 @@ const Welcome: FunctionComponent = () => {
 
 }
 
-export default Welcome;
+export default SignIn;

@@ -1,8 +1,8 @@
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 
-import SignIn from './screens/SignIn';
-import SignUp from './screens/SignUp';
+//Reac navigation stack
+import RootStack from './navigators/RootStack';
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -15,7 +15,7 @@ export default function App() {
   }
 
   return (
-      <SignUp/>
+      <RootStack/>
   );
 }
 

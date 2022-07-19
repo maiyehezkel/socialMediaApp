@@ -14,11 +14,27 @@ const WelcomeContainer = styled(container)`
   height: 100%
   width: 100%
 `;
-
+const Avatar = styled.Image`
+    width:100px;
+    height:100px;
+    margin:auto;
+    border-radius: 50px;
+    border-width: 2px;
+    border-color: black;
+    margin-bottom: 20px;
+    margin-top:20px;
+`;
+const WelcomeImage = styled.Image`
+    height: 50%;
+    min-width:100%;
+`;
 const TopSection = styled.View`
     width:100%;
     flex:1;
     max-height: 32%;
+    ${(props) => props.welcome == true && `
+    align-items:center;
+    `}
 `;
 
 const TopImage = styled.Image`
@@ -37,15 +53,22 @@ const BigText = styled.Text`
     color: white;
     text-align: left;
     width: 70%;
-    marginBottom: 15px;
+    margin-top:-15px;
     font-family: Lato-Bold;
+    ${(props) => props.welcome == true && `
+    font-size:30px;
+
+
+
+
+  `}
 `;
 const SmallText = styled.Text`
     font-size: 15px;
     color: grey;
     text-align: left;
     width: 70%;
-    marginBottom: 25px;
+    margin-bottom: 25px;
     font-family: Lato-Regular;
 `;
 const RegularText = styled.Text`
@@ -116,7 +139,17 @@ const ExtraText = styled.Text`
     font-size:13px;
     color:white;
     text-align: center;
+    ${(props) => props.welcome == true && `
+    margin-bottom:10px;
+    margin-top:5px;
+    font-size:18px;
+    color: #ef835d;
+    font-weight:bold;
+    `}
+
 `;
+
+
 const styles = StyleSheet.create({
     input: {
         padding: 1,
@@ -142,72 +175,27 @@ interface MyFormValues {
     confirmPassword: string;
   }
 
-const SignUp: FunctionComponent = ({navigation}) => {
+const Welcome: FunctionComponent = ({navigation}) => {
     const initialValues: MyFormValues = { fullName:'', email: '', password:'', confirmPassword:'' };
     return(
         <>
             <StatusBar style="light"/>
             <WelcomeContainer>
-                <TopSection>
+                <TopSection welcome={true}>
                     <TopImage source={backGround}/>
+                    <BigText welcome={true}>Welcome to MeetMe</BigText>
                 </TopSection>
                 <BottomSection>
-                    <BigText>
-                    Join to MeetMe
-                    </BigText>                
-                    <Formik
-                    initialValues={{ fullName:'', email: '',password: '',confirmPassword: '' }}
-                    onSubmit={(values) => {
-                        console.log(values)
-                        navigation.navigate('Welcome')
-                        }}>
-                        {({ handleChange, handleBlur, handleSubmit, values }) => (
-                            <StyledForm>
-                                <StyledInputLabel>Full Name </StyledInputLabel>
-                                <TextInput
-                                style={styles.input}
-                                onChangeText={handleChange('fullName')}
-                                onBlur={handleBlur('fullName')}
-                                value={values.fullName}
-                                />
-                                <StyledInputLabel>Email </StyledInputLabel>
-                                <TextInput
-                                style={styles.input}
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                                />
-                                <StyledInputLabel>Password </StyledInputLabel>
-                                <TextInput
-                                style={styles.input}
-                                onChangeText={handleChange('password')}
-                                onBlur={handleBlur('password')}
-                                value={values.password}
-                                />
-                                <StyledInputLabel>Confirm Password </StyledInputLabel>
-                                <TextInput
-                                style={styles.input}
-                                onChangeText={handleChange('confirmPassword')}
-                                onBlur={handleBlur('confirmPassword')}
-                                value={values.confirmPassword}
-                                />
-                                <StyledButton onPress={()=>navigation.navigate('Welcome')}>
-                                    <ButtonText>
-                                        Sign Up
-                                    </ButtonText>
-                                </StyledButton>
-                                <MsgBox>...</MsgBox>
-                                <Line/>
-                                <ExtraText>already have an account?</ExtraText>
-                                <StyledButton signup={true} onPress={()=>navigation.navigate('SignIn')}>
-                                    <ButtonText signup={true}>
-                                        Sign in
-                                    </ButtonText>
-                                </StyledButton>
-                               </StyledForm>
-                                )}
-                                
-                                </Formik>             
+                    <ExtraText welcome={true}>Mai Yehezkel</ExtraText>
+                    <ExtraText>MaiYehezkel@gmail.com</ExtraText>
+
+                    <Avatar resizeMode="cover" source={require('./../assets/pawel-czerwinski-OG44d93iNJk-unsplash.jpg')}></Avatar>
+                    <Line/>
+                    <StyledButton onPress={()=>navigation.navigate('SignIn')}>
+                        <ButtonText>
+                            Logout
+                        </ButtonText>
+                    </StyledButton>
                 </BottomSection>
             </WelcomeContainer>
         </>
@@ -215,4 +203,4 @@ const SignUp: FunctionComponent = ({navigation}) => {
 
 }
 
-export default SignUp;
+export default Welcome;
