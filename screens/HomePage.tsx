@@ -3,16 +3,13 @@ import { FunctionComponent } from "react";
 import styled from "styled-components/native";
 import { Field, Form, Formik } from "formik";
 import { container } from "../components/shared";
-import { Button,Text, TextInput, View, StyleSheet } from "react-native";
+import { Button, TextInput, View, StyleSheet } from "react-native";
 import { GoogleLoginButton } from 'ts-react-google-login-component';
 import { Entypo} from "@expo/vector-icons"
-import * as ImagePicker from 'expo-image-picker';
-import React, { useState, useEffect } from 'react';
-
 
 
 const WelcomeContainer = styled(container)`
-  background-color:#2c365a;
+  background-color:black;
   justify-content:space-between;
   height: 100%
   width: 100%
@@ -26,7 +23,6 @@ const Avatar = styled.Image`
     border-color: black;
     margin-bottom: 20px;
     margin-top:20px;
-    background-color:white;
 `;
 const WelcomeImage = styled.Image`
     height: 50%;
@@ -35,7 +31,7 @@ const WelcomeImage = styled.Image`
 const TopSection = styled.View`
     width:100%;
     flex:1;
-    max-height: 32%;
+    max-height: 100%;
     ${(props) => props.welcome == true && `
     align-items:center;
     `}
@@ -108,13 +104,10 @@ const StyledButton = styled.TouchableOpacity`
     `}
     ${(props) => props.upload == true && `
      padding:5px;
-      width:37%;
-      align-self:center;
-      align-items: center;
-      justify-content: center;
+      width: 50%;
       height: 30px;
-      margin-top:-10px;
-
+      margin-top:-15px;
+      margin-left:90px;
   `}
     ${(props) => props.edit == true && `
     background-color:transparent;  
@@ -188,7 +181,7 @@ const styles = StyleSheet.create({
 
 
 
-import backGround from "./../assets/background_v1.png";
+import backGround from "./../assets/background_transparent.png";
 import { processFontFamily } from "expo-font";
 
 
@@ -199,40 +192,8 @@ interface MyFormValues {
     confirmPassword: string;
   }
 
-const Welcome: FunctionComponent = ({navigation}) => {
-    const [hasGalleryPermission, setHasGalleryPremission] = useState<any | null>(null);
-    const [image, setImage] = useState<any | null>(null);
-
-    useEffect(()=>{
-        (async () =>{
-            const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            setHasGalleryPremission(galleryStatus.status === 'granted')
-        })();
-    }, []);
-
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4,3],
-            quality:1,
-        });
-
-        console.log(result);
-
-        if(!result.cancelled){
-            setImage(result.uri)
-        }
-
-        if(hasGalleryPermission === false){
-            return <Text> No access</Text>
-        }
-    }
-
-    const editName = async () => {
-        return<> <StyledInputLabel>Full Name </StyledInputLabel>
-        </>
-    }
+const HomePage: FunctionComponent = ({navigation}) => {
+    const initialValues: MyFormValues = { fullName:'', email: '', password:'', confirmPassword:'' };
     return(
         <>
             <StatusBar style="light"/>
@@ -245,13 +206,13 @@ const Welcome: FunctionComponent = ({navigation}) => {
                 <BottomSection>
                     <Row>
                     <ExtraText welcome={true}>Mai Yehezkel</ExtraText>
-                    <StyledButton edit={true} onPress={()=>editName()}>
+                    <StyledButton edit={true}>
                     <Entypo name="edit" color={'white'}size={15}/></StyledButton>
                     </Row>
                     <ExtraText>MaiYehezkel@gmail.com</ExtraText>
 
-                    <Avatar resizeMode="cover" source={{uri:image}}></Avatar>
-                    <StyledButton upload={true}><ButtonText onPress={()=>pickImage()} upload={true}>Choose profile picture</ButtonText></StyledButton>
+                    <Avatar resizeMode="cover" source={require('./../assets/pawel-czerwinski-OG44d93iNJk-unsplash.jpg')}></Avatar>
+                    <StyledButton upload={true}><ButtonText upload={true}>Choose profile picture</ButtonText></StyledButton>
                     <Line/>
                     <StyledButton onPress={()=>navigation.navigate('SignIn')}>
                         <ButtonText>
@@ -265,4 +226,4 @@ const Welcome: FunctionComponent = ({navigation}) => {
 
 }
 
-export default Welcome;
+export default HomePage;
