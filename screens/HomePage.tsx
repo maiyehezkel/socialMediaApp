@@ -182,7 +182,6 @@ const styles = StyleSheet.create({
 
 
 import backGround from "./../assets/background_transparent.png";
-import { processFontFamily } from "expo-font";
 
 
 interface MyFormValues {
@@ -192,7 +191,7 @@ interface MyFormValues {
     confirmPassword: string;
   }
 
-const HomePage: FunctionComponent = ({navigation}) => {
+const HomePage: FunctionComponent = ({navigation}:any) => {
     const initialValues: MyFormValues = { fullName:'', email: '', password:'', confirmPassword:'' };
     return(
         <>

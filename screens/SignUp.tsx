@@ -1,9 +1,10 @@
 import { StatusBar } from "expo-status-bar";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { Field, Form, Formik } from "formik";
 import { container } from "../components/shared";
 import { Button, TextInput, View, StyleSheet } from "react-native";
+import { User, addUser } from "../models/user_Model"
 import { GoogleLoginButton } from 'ts-react-google-login-component';
 import { Fontisto} from "@expo/vector-icons"
 
@@ -125,6 +126,13 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
         marginBottom:10
     },
+    activity_indicator:{
+        width: "100%",
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",      
+        position: "absolute"
+    }
   });
 
 
@@ -133,17 +141,31 @@ const styles = StyleSheet.create({
 
 import backGround from "./../assets/background_v1.png";
 import { processFontFamily } from "expo-font";
+import { useRoute } from "@react-navigation/native";
+import ActivityIndicator from "../components/custom_activity_indicator";
 
+const SignUp: FunctionComponent = ({navigation}:any) => {
+    const [email, setEmail] = useState<String>("")
+    const [password, setpassword] = useState<String>("")
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [fullName,setFullname] = useState<String>("")
+    const onSave = async () => {
+        setIsLoading(true)
+        var user: User = {
+            email: email,
+            password: password,
+            fullName: fullName
+        }
+        await addUser(user)
+        navigation.navigate('Welcome')
+    }
+    useEffect(() => {
+        if (email&&password&&fullName) {
+            console.log(email,password,fullName)
+            onSave()
+        }
+      }, [email,password,fullName])
 
-interface MyFormValues {
-    fullName: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-  }
-
-const SignUp: FunctionComponent = ({navigation}) => {
-    const initialValues: MyFormValues = { fullName:'', email: '', password:'', confirmPassword:'' };
     return(
         <>
             <StatusBar style="light"/>
@@ -158,8 +180,9 @@ const SignUp: FunctionComponent = ({navigation}) => {
                     <Formik
                     initialValues={{ fullName:'', email: '',password: '',confirmPassword: '' }}
                     onSubmit={(values) => {
-                        console.log(values)
-                        navigation.navigate('Welcome')
+                        setFullname(values.fullName)
+                        setEmail(values.email)
+                        setpassword(values.password)
                         }}>
                         {({ handleChange, handleBlur, handleSubmit, values }) => (
                             <StyledForm>
@@ -191,11 +214,14 @@ const SignUp: FunctionComponent = ({navigation}) => {
                                 onBlur={handleBlur('confirmPassword')}
                                 value={values.confirmPassword}
                                 />
-                                <StyledButton onPress={()=>navigation.navigate('Welcome')}>
+                                <StyledButton onPress={handleSubmit}>
                                     <ButtonText>
                                         Sign Up
                                     </ButtonText>
                                 </StyledButton>
+                                <View style={styles.activity_indicator}>
+                                   <ActivityIndicator visible={isLoading}></ActivityIndicator>
+                               </View>
                                 <MsgBox>...</MsgBox>
                                 <Line/>
                                 <ExtraText>already have an account?</ExtraText>

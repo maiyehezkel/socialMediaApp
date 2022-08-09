@@ -199,7 +199,7 @@ interface MyFormValues {
     confirmPassword: string;
   }
 
-const Welcome: FunctionComponent = ({navigation}) => {
+const Welcome: FunctionComponent = ({navigation}:any) => {
     const [hasGalleryPermission, setHasGalleryPremission] = useState<any | null>(null);
     const [image, setImage] = useState<any | null>(null);
 

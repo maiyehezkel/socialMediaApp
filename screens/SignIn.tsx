@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { FunctionComponent } from "react";
+import { FunctionComponent,useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { Field, Form, Formik } from "formik";
 import { container } from "../components/shared";
@@ -141,6 +141,13 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
         marginBottom:10
     },
+    activity_indicator:{
+        width: "100%",
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",      
+        position: "absolute"
+    }
   });
 
 
@@ -148,24 +155,43 @@ const styles = StyleSheet.create({
 
 
 import backGround from "./../assets/background_v1.png";
-import { processFontFamily } from "expo-font";
+import { ScrollView } from "react-native-gesture-handler";
+import { User,loginUser} from "../models/user_Model";
+import ActivityIndicator from "../components/custom_activity_indicator";
 
 
-interface MyFormValues {
-    email: string;
-    password: string;
-  }
 
-const SignIn: FunctionComponent = ({navigation}) => {
-    const initialValues: MyFormValues = { email: '', password:'' };
+const SignIn: FunctionComponent = ({navigation}:any) => {
+    const [email, setEmail] = useState<String>("")
+    const [password, setpassword] = useState<String>("")
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const onSave = async () => {
+        setIsLoading(true)
+        var user: User = {
+            email: email,
+            password: password
+        }
+        await loginUser(user)
+        navigation.navigate('ProfilePage')
+    }
+    useEffect(() => {
+        if (email&&password) {
+            console.log(email,password)
+            onSave()
+        }
+      }, [email,password])
+
     return(
         <>
+
             <StatusBar style="light"/>
             <WelcomeContainer>
                 <TopSection>
                     <TopImage source={backGround}/>
                 </TopSection>
+
                 <BottomSection>
+                <ScrollView>
                     <BigText>
                     Welcome to MeetMe
                     </BigText>
@@ -176,9 +202,8 @@ const SignIn: FunctionComponent = ({navigation}) => {
                     <Formik
                     initialValues={{ email: '',password: '' }}
                     onSubmit={(values) => {
-                        console.log(values);
-                        navigation.navigate('Welcome')
-                        
+                        setEmail(values.email)
+                        setpassword(values.password)
                     }}>
                         {({ handleChange, handleBlur, handleSubmit, values }) => (
                             <StyledForm>
@@ -202,10 +227,13 @@ const SignIn: FunctionComponent = ({navigation}) => {
                                         Login
                                     </ButtonText>
                                 </StyledButton>
+                                <View style={styles.activity_indicator}>
+                                   <ActivityIndicator visible={isLoading}></ActivityIndicator>
+                               </View>
                                 <MsgBox>...</MsgBox>
                                 
                                 <Line/>
-                                <StyledButton google={true} onPress={handleSubmit}>
+                                <StyledButton google={true} onPress={console.log("google")}>
                                     <Fontisto name="google" color={'#85c6d8'}size={25}/>
                                     <ButtonText google={true}>
                                         Sign in with Google
@@ -220,12 +248,16 @@ const SignIn: FunctionComponent = ({navigation}) => {
                                </StyledForm>
                                 )}
                                 
-                                </Formik>             
+                                </Formik>     
+                                </ScrollView>        
                 </BottomSection>
+                
             </WelcomeContainer>
+        
         </>
     );
 
 }
 
 export default SignIn;
+
