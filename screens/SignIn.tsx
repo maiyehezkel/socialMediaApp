@@ -1,11 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import { FunctionComponent,useEffect, useState } from "react";
+import { FunctionComponent,SetStateAction,useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { Field, Form, Formik } from "formik";
 import { container } from "../components/shared";
 import { Button, TextInput, View, StyleSheet } from "react-native";
-import { GoogleLoginButton } from 'ts-react-google-login-component';
+
 import { Fontisto} from "@expo/vector-icons"
+
+
 
 
 const WelcomeContainer = styled(container)`
@@ -106,6 +108,7 @@ const MsgBox = styled.Text`
     font-size: 12px;
     color: white;
     font-weight: bold;
+
 `;
 const Line = styled.View`
     height: 1px;
@@ -158,6 +161,7 @@ import backGround from "./../assets/background_v1.png";
 import { ScrollView } from "react-native-gesture-handler";
 import { User,loginUser} from "../models/user_Model";
 import ActivityIndicator from "../components/custom_activity_indicator";
+import * as Google from 'expo-google-app-auth';
 
 
 
@@ -165,14 +169,22 @@ const SignIn: FunctionComponent = ({navigation}:any) => {
     const [email, setEmail] = useState<String>("")
     const [password, setpassword] = useState<String>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [googleSubmit, setGoogleSubmit] = useState<boolean>(false)
+    const [message, setMessage] = useState<String>("")
+
+
     const onSave = async () => {
         setIsLoading(true)
         var user: User = {
             email: email,
             password: password
         }
-        await loginUser(user)
-        navigation.navigate('ProfilePage')
+        const res = await loginUser(user)
+        if(res){
+            navigation.navigate('HomePage', user.fullName)
+        }else{setMessage('Wrong email or password')}
+        setIsLoading(false)
+        
     }
     useEffect(() => {
         if (email&&password) {
@@ -180,6 +192,29 @@ const SignIn: FunctionComponent = ({navigation}:any) => {
             onSave()
         }
       }, [email,password])
+
+
+    const handleGoogle = async () =>{
+        setGoogleSubmit(true);
+        await Google.logInAsync({
+            androidClientId: '49875968929-u482b299r5u616c0ih2toi0hdtq9efto.apps.googleusercontent.com'.toString(),
+            iosClientId: '49875968929-1ecfap7gf84nr44udiovfv0nmljb6312.apps.googleusercontent.com'.toString(),
+            scopes: ['profile','email']
+        }).then((result)=>{
+            const {type,user} = result;
+            if (type == 'success'){
+                const {email,name} = user;
+                setMessage('Google signin successful');
+                setTimeout(()=> navigation.navigate('Welcome', {email,name}),1000);
+            } else {
+                setMessage('Google signin was cancelled');
+            }
+            setGoogleSubmit(false);
+
+        }).catch(error=>{console.log(error);});
+        setMessage('An error occured. Check your network and try again.');
+        setGoogleSubmit(false);
+    }
 
     return(
         <>
@@ -227,18 +262,21 @@ const SignIn: FunctionComponent = ({navigation}:any) => {
                                         Login
                                     </ButtonText>
                                 </StyledButton>
-                                <View style={styles.activity_indicator}>
-                                   <ActivityIndicator visible={isLoading}></ActivityIndicator>
-                               </View>
-                                <MsgBox>...</MsgBox>
+                                <MsgBox>{message}</MsgBox>
                                 
                                 <Line/>
-                                <StyledButton google={true} onPress={console.log("google")}>
+                                {!googleSubmit && (
+                                <StyledButton google={true} onPress={handleGoogle}>
                                     <Fontisto name="google" color={'#85c6d8'}size={25}/>
                                     <ButtonText google={true}>
                                         Sign in with Google
                                     </ButtonText>
                                 </StyledButton>
+                                )}
+                                {googleSubmit &&(
+                                    <><StyledButton google={true} disabled={true}>
+                                    </StyledButton></>
+                                )}
                                 <ExtraText>Don't have an account already?</ExtraText>
                                 <StyledButton signup={true} onPress={()=>navigation.navigate('SignUp')}>
                                     <ButtonText signup={true}>

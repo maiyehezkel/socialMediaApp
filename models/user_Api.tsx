@@ -10,8 +10,11 @@ const loginuser = async (ur: User) => {
     })
     if (res.ok) {
         console.log("login success")
+        return true
+        
     } else {
         console.log("login fail", res.data)
+        return false
     }
 } 
 const addNewUser = async (ur: User) => {
@@ -22,10 +25,13 @@ const addNewUser = async (ur: User) => {
     })
     if (res.ok) {
         console.log("addUser success")
-        navigation.navigate('ProfilePage')
+       
     } else {
         console.log("addUser fail", res.data)
+        
     }
+    
+    
 } 
 export default {
     addNewUser,

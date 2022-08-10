@@ -140,8 +140,6 @@ const styles = StyleSheet.create({
 
 
 import backGround from "./../assets/background_v1.png";
-import { processFontFamily } from "expo-font";
-import { useRoute } from "@react-navigation/native";
 import ActivityIndicator from "../components/custom_activity_indicator";
 
 const SignUp: FunctionComponent = ({navigation}:any) => {
@@ -149,15 +147,23 @@ const SignUp: FunctionComponent = ({navigation}:any) => {
     const [password, setpassword] = useState<String>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [fullName,setFullname] = useState<String>("")
+    const [message, setMessage] = useState<String>("")
     const onSave = async () => {
         setIsLoading(true)
-        var user: User = {
-            email: email,
-            password: password,
-            fullName: fullName
-        }
-        await addUser(user)
-        navigation.navigate('Welcome')
+        var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if (email.match(validRegex)&&email.length>11) {
+            if(password.length>8){
+                var user: User = {
+                    email: email,
+                    password: password,
+                    fullName: fullName
+                }
+                await addUser(user)
+                console.log()
+                navigation.navigate('Welcome')
+            } else {setMessage('Password must be longer than 8 charcters')}
+        } else {setMessage('Invalid email')}
+        setIsLoading(false)
     }
     useEffect(() => {
         if (email&&password&&fullName) {
@@ -222,7 +228,7 @@ const SignUp: FunctionComponent = ({navigation}:any) => {
                                 <View style={styles.activity_indicator}>
                                    <ActivityIndicator visible={isLoading}></ActivityIndicator>
                                </View>
-                                <MsgBox>...</MsgBox>
+                               <MsgBox>{message}</MsgBox>
                                 <Line/>
                                 <ExtraText>already have an account?</ExtraText>
                                 <StyledButton signup={true} onPress={()=>navigation.navigate('SignIn')}>

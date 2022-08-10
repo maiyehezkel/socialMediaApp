@@ -1,228 +1,102 @@
-import { StatusBar } from "expo-status-bar";
-import { FunctionComponent } from "react";
-import styled from "styled-components/native";
-import { Field, Form, Formik } from "formik";
-import { container } from "../components/shared";
-import { Button, TextInput, View, StyleSheet } from "react-native";
-import { GoogleLoginButton } from 'ts-react-google-login-component';
-import { Entypo} from "@expo/vector-icons"
+import { FC, useEffect, useState } from "react";
+import { View, Text, Image, StyleSheet, FlatList, TouchableHighlight, ScrollView } from "react-native";
+import {getPostById, Post} from "../models/post_Model";
+import { User } from "../models/user_Model";
+
+const PostListRow: FC<{ post: Post, onItemClick: (id:String)=>void }> = ({ post, onItemClick }) => {
+    return (
+        <ScrollView>
+        <TouchableHighlight onPress={()=>{onItemClick(post.id)}}>
+            <View style={styles.list_row_container}>
+                { <Image source={require("../assets/avatar.png")} style={styles.list_row_image}></Image>}
+                <View style={styles.list_row_text_container}>
+                    <Text style={styles.list_row_id}>{post.id}</Text>
+                    <Text style={styles.list_row_name}>{post.name}</Text>
+
+                </View>
+            </View>
+        </TouchableHighlight>
+        </ScrollView>
+    )
+}
 
 
-const WelcomeContainer = styled(container)`
-  background-color:black;
-  justify-content:space-between;
-  height: 100%
-  width: 100%
-`;
-const Avatar = styled.Image`
-    width:100px;
-    height:100px;
-    margin:auto;
-    border-radius: 50px;
-    border-width: 2px;
-    border-color: black;
-    margin-bottom: 20px;
-    margin-top:20px;
-`;
-const WelcomeImage = styled.Image`
-    height: 50%;
-    min-width:100%;
-`;
-const TopSection = styled.View`
-    width:100%;
-    flex:1;
-    max-height: 100%;
-    ${(props) => props.welcome == true && `
-    align-items:center;
-    `}
-`;
+const Home: FC<{ user:String, navigation: any, route: any }> = ({ user, navigation, route }) => {
+    const [data, setData] = useState<Array<Post>>()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
-const TopImage = styled.Image`
-    height: 100%;
-    width: 100%; 
-    resize-mode: stretch;   
-`;
+    const openDetails = (id:String)=>{
+        console.log("on press " + id)
+    }
 
-const BottomSection = styled.View`
-    width:100%;
-    flex: 1;
-    padding:25px;
-`;
-const BigText = styled.Text`
-    font-size: 37px;
-    color: white;
-    text-align: left;
-    width: 70%;
-    margin-top:-15px;
-    font-family: Lato-Bold;
-    ${(props) => props.welcome == true && `
-    font-size:30px;
+    useEffect(()=>{
+        navigation.addListener('focus',()=>{
+            reloadData()
+        })
+    },[navigation])
 
+    const reloadData = async ()=>{
+        setIsLoading(true)
+        const postData = await getPostById(user)
+        setData(postData)
+        setIsLoading(false)
+    }
 
+    return (
+        <View style={styles.home_container}>
+            <FlatList
+                data={data}
+                keyExtractor={item => item.id.toString()}
+                renderItem={({ item }) => (<PostListRow post={item} 
+                            onItemClick={openDetails} />)}
+            ></FlatList>
 
-
-  `}
-`;
-const SmallText = styled.Text`
-    font-size: 15px;
-    color: grey;
-    text-align: left;
-    width: 70%;
-    margin-bottom: 25px;
-    font-family: Lato-Regular;
-`;
-const RegularText = styled.Text`
-    font-size: 17px;
-    color: white;
-    text-align: left;
-    font-family: Lato-Bold;
-`;
-const StyledForm = styled.View`
-    width: 90%;
-`;
-const StyledInputLabel = styled.Text`
-    color:white;
-    font-size:13px;
-    text-align:left;
-    font-family: Lato-Regular;
-`;
-const StyledButton = styled.TouchableOpacity`
-    padding:10px;
-    background-color: white;
-    align-items: center;
-    border-radius: 5px;
-    margin-vertical: 5px;
-    height: 45px;
-
-
-    ${(props) => props.google == true && `
-        flex-direction: row;
-    `}
-    ${(props) => props.signup == true && `
-      margin-top:-13px;
-      background-color:transparent;  
-    `}
-    ${(props) => props.upload == true && `
-     padding:5px;
-      width: 50%;
-      height: 30px;
-      margin-top:-15px;
-      margin-left:90px;
-  `}
-    ${(props) => props.edit == true && `
-    background-color:transparent;  
-    `}
-`;
-
-const ButtonText = styled.Text`
-    color: #2c365a;
-    font-size: 16px;
-    font-weight: bold; 
-    font-family: Lato-Bold;
-
-    ${(props) => props.google == true && `
-    margin-left:10px;
-    `}
-    ${(props) => props.signup == true && `
-    color:#85c6d8;
-    font-family: Lato-Regular;
-    `}
-    ${(props) => props.upload == true && `
-    font-size:12px;
-    font-family: Lato-Regular;
-
-    `}
-`;
-const Row = styled.View`
-    flex-direction: row;
-    justify-content:center;
-    align-items:center;
-`;
-const MsgBox = styled.Text`
-    text-align: center;
-    font-size: 12px;
-    color: white;
-    font-weight: bold;
-`;
-const Line = styled.View`
-    height: 1px;
-    width: 100%
-    margin-vertical: 7px;
-    background-color: grey;
-`;
-const ExtraText = styled.Text`
-    font-family: Lato-Regular;
-    font-size:13px;
-    color:white;
-    text-align: center;
-    ${(props) => props.welcome == true && `
-    margin-bottom:10px;
-    margin-top:5px;
-    font-size:18px;
-    color: #ef835d;
-    font-weight:bold;
-    flex-direction: row;
-    `}
-
-`;
+        </View>
+    )
+}
 
 
 const styles = StyleSheet.create({
-    input: {
-        padding: 1,
-        borderBottomColor: 'black',
-        height: 25,
-        borderBottomWidth: 2,
-        marginBottom:10
+    home_container: {
+        marginTop:30,
+        flex: 1
     },
-  });
+    list_row_container: {
+        height: 100,
+        // width: "100%",
+        // backgroundColor: "grey",
+        flexDirection: "row",
+        elevation: 4,
+        borderRadius: 3,
+        marginLeft: 8,
+        marginRight: 8
+    },
+    list_row_image: {
+        height: 50,
+        width: 50,
+        margin: 10,
+        borderRadius: 15
+    },
+    list_row_text_container: {
+        justifyContent: "center"
+    },
+    list_row_name: {
+        fontSize: 20,
+        marginBottom: 10
+    },
+    list_row_id: {
+        fontSize: 25
+    },
+    activity_indicator:{
+        width: "100%",
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",      
+        position: "absolute"
+    }
+})
+export default Home
 
-
-
-
-
-import backGround from "./../assets/background_transparent.png";
-
-
-interface MyFormValues {
-    fullName: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-  }
-
-const HomePage: FunctionComponent = ({navigation}:any) => {
-    const initialValues: MyFormValues = { fullName:'', email: '', password:'', confirmPassword:'' };
-    return(
-        <>
-            <StatusBar style="light"/>
-            <WelcomeContainer>
-                <TopSection welcome={true}>
-                    <TopImage source={backGround}/>
-                    <BigText welcome={true}>Welcome to MeetMe</BigText>
-                </TopSection>
-                
-                <BottomSection>
-                    <Row>
-                    <ExtraText welcome={true}>Mai Yehezkel</ExtraText>
-                    <StyledButton edit={true}>
-                    <Entypo name="edit" color={'white'}size={15}/></StyledButton>
-                    </Row>
-                    <ExtraText>MaiYehezkel@gmail.com</ExtraText>
-
-                    <Avatar resizeMode="cover" source={require('./../assets/pawel-czerwinski-OG44d93iNJk-unsplash.jpg')}></Avatar>
-                    <StyledButton upload={true}><ButtonText upload={true}>Choose profile picture</ButtonText></StyledButton>
-                    <Line/>
-                    <StyledButton onPress={()=>navigation.navigate('SignIn')}>
-                        <ButtonText>
-                            Logout
-                        </ButtonText>
-                    </StyledButton>
-                </BottomSection>
-            </WelcomeContainer>
-        </>
-    );
-
+function onItemClick(id: any) {
+    throw new Error("Function not implemented.")
 }
-
-export default HomePage;

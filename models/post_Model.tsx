@@ -1,4 +1,4 @@
-import PostApi from './post_Api'
+import PostApi, { getMyPosts } from './post_Api'
 
 export type Post = {
     id: String,
@@ -14,5 +14,9 @@ export const getAllPosts = async ()=>{
 export const addPosts = async (ps:Post)=>{
     await PostApi.addPosts(ps)
 } 
+export const getPostById = async (ps:String)=>{
+    const Posts = await PostApi.getMyPosts(ps)
+    return Posts
+}
 
 
