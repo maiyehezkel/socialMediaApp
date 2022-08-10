@@ -3,7 +3,7 @@ import { Post } from "./post_Model"
 import FormData from 'form-data'
 
 export const getAllPosts = async () => {
-    console.log("getAllStudents")
+    console.log("getAllPosts")
     const res = await apiClient.get("/post")
     let posts = Array<Post>()
     if (res.ok) {
@@ -23,6 +23,27 @@ export const getAllPosts = async () => {
     }
     return posts
 }
+export const getMyPosts = async (ps:String) => {
+    console.log("getMyPosts")
+    const res = await apiClient.get("/post?sender="+ps)
+    let posts = Array<Post>()
+    if (res.ok) {
+        console.log("getMyPosts res.data " + res.data + ps)
+        if (res.data){
+            res.data.forEach((item:any)=>{
+                console.log("getMyPosts item " + item.message)
+                const st:Post = {
+                    id: item.sender,
+                    name: item.message,
+                }
+                posts.push(st)
+            })
+        }
+    } else {
+        console.log("getMyPosts fail")
+    }
+    return posts
+}
 
 export const addPosts = async (ps: Post) => {
     const res = await apiClient.post("/post", {
@@ -37,6 +58,7 @@ export const addPosts = async (ps: Post) => {
 } 
 export default {
     getAllPosts,
-    addPosts
+    addPosts,
+    getMyPosts
 }
 
