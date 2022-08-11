@@ -1,11 +1,31 @@
 import { FC, useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, FlatList, TouchableHighlight, ScrollView } from "react-native";
-import ActivityIndicator from "./../components/custom_activity_indicator"
-import {getAllPosts, Post} from "../models/post_Model";
+import { View, Text, Image, StyleSheet, FlatList, TouchableHighlight } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
+import {getAllPosts, Post} from "../models/post_Model";
+import styled from "styled-components/native";
+
+
+const StyledButton = styled.TouchableOpacity`
+    padding:10px;
+    background-color: white;
+    justify-content: center;
+    border-radius: 5px;
+    margin-vertical: 5px;
+    height: 45px;
+    align-items: center;
+`;
+
+const ButtonText = styled.Text`
+    color: #2c365a;
+    font-size: 16px;
+    font-weight: bold; 
+    font-family: Lato-Bold;
+    
+`;
 const PostListRow: FC<{ post: Post, onItemClick: (id:String)=>void }> = ({ post, onItemClick }) => {
     return (
-        <ScrollView>
+       
         <TouchableHighlight onPress={()=>{onItemClick(post.id)}}>
             <View style={styles.list_row_container}>
                 { <Image source={require("../assets/avatar.png")} style={styles.list_row_image}></Image>}
@@ -16,14 +36,12 @@ const PostListRow: FC<{ post: Post, onItemClick: (id:String)=>void }> = ({ post,
                 </View>
             </View>
         </TouchableHighlight>
-        </ScrollView>
     )
 }
 
 
 const Home: FC<{ navigation: any, route: any }> = ({ navigation, route }) => {
     const [data, setData] = useState<Array<Post>>()
-    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const openDetails = (id:String)=>{
         console.log("on press " + id)
@@ -36,21 +54,27 @@ const Home: FC<{ navigation: any, route: any }> = ({ navigation, route }) => {
     },[navigation])
 
     const reloadData = async ()=>{
-        setIsLoading(true)
         const postData = await getAllPosts()
         setData(postData)
-        setIsLoading(false)
+    }
+    const newPost = ()=>{
+        navigation.navigate('AddPost')
     }
 
     return (
         <View style={styles.home_container}>
-            <FlatList
+      
+            <StyledButton onPress={newPost}>
+                <ButtonText >Add your Post</ButtonText>
+            </StyledButton>
+         
+            <FlatList nestedScrollEnabled
                 data={data}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (<PostListRow post={item} 
                             onItemClick={openDetails} />)}
             ></FlatList>
-
+    
         </View>
     )
 }
@@ -97,6 +121,4 @@ const styles = StyleSheet.create({
 })
 export default Home
 
-function onItemClick(id: any) {
-    throw new Error("Function not implemented.")
-}
+

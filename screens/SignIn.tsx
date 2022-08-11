@@ -1,9 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import { FunctionComponent,SetStateAction,useEffect, useState } from "react";
+import { FunctionComponent,useEffect, useState } from "react";
 import styled from "styled-components/native";
-import { Field, Form, Formik } from "formik";
+import { Formik } from "formik";
 import { container } from "../components/shared";
-import { Button, TextInput, View, StyleSheet } from "react-native";
+import { TextInput, StyleSheet } from "react-native";
 
 import { Fontisto} from "@expo/vector-icons"
 
@@ -52,12 +52,7 @@ const SmallText = styled.Text`
     font-family: Lato-Regular;
 
 `;
-const RegularText = styled.Text`
-    font-size: 17px;
-    color: white;
-    text-align: left;
-    font-family: Lato-Bold;
-`;
+
 const StyledForm = styled.View`
     width: 90%;
 `;
@@ -122,20 +117,6 @@ const ExtraText = styled.Text`
     color:white;
     text-align: center;
 `;
-const Avatar = styled.Image`
-    width:100px;
-    height:100px;
-    margin:auto;
-    border-radios: 50px;
-    border-width: 2px;
-    border-color: black;
-    margin-bottom: 10px;
-    margin-top:10px;
-`;
-const WelcomeImage = styled.Image`
-    height: 50%;
-    min-width:100%;
-`;
 const styles = StyleSheet.create({
     input: {
         padding: 1,
@@ -160,7 +141,6 @@ const styles = StyleSheet.create({
 import backGround from "./../assets/background_v1.png";
 import { ScrollView } from "react-native-gesture-handler";
 import { User,loginUser} from "../models/user_Model";
-import ActivityIndicator from "../components/custom_activity_indicator";
 import * as Google from 'expo-google-app-auth';
 
 
@@ -181,7 +161,8 @@ const SignIn: FunctionComponent = ({navigation}:any) => {
         }
         const res = await loginUser(user)
         if(res){
-            navigation.navigate('HomePage', user.fullName)
+            console.log(user)
+            navigation.navigate('ProfilePage')
         }else{setMessage('Wrong email or password')}
         setIsLoading(false)
         

@@ -1,12 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import { FunctionComponent, useEffect, useState } from "react";
 import styled from "styled-components/native";
-import { Field, Form, Formik } from "formik";
+import { Formik } from "formik";
 import { container } from "../components/shared";
-import { Button, TextInput, View, StyleSheet } from "react-native";
+import { TextInput, View, StyleSheet } from "react-native";
 import { User, addUser } from "../models/user_Model"
-import { GoogleLoginButton } from 'ts-react-google-login-component';
-import { Fontisto} from "@expo/vector-icons"
+
 
 
 const WelcomeContainer = styled(container)`
@@ -41,20 +40,7 @@ const BigText = styled.Text`
     marginBottom: 15px;
     font-family: Lato-Bold;
 `;
-const SmallText = styled.Text`
-    font-size: 15px;
-    color: grey;
-    text-align: left;
-    width: 70%;
-    marginBottom: 25px;
-    font-family: Lato-Regular;
-`;
-const RegularText = styled.Text`
-    font-size: 17px;
-    color: white;
-    text-align: left;
-    font-family: Lato-Bold;
-`;
+
 const StyledForm = styled.View`
     width: 90%;
 `;

@@ -1,6 +1,5 @@
 import apiClient from './Client_Api'
 import { Post } from "./post_Model"
-import FormData from 'form-data'
 
 export const getAllPosts = async () => {
     console.log("getAllPosts")
@@ -25,6 +24,8 @@ export const getAllPosts = async () => {
 }
 export const getMyPosts = async (ps:String) => {
     console.log("getMyPosts")
+    const path = ("/post?sender="+ps)
+    console.log(path)
     const res = await apiClient.get("/post?sender="+ps)
     let posts = Array<Post>()
     if (res.ok) {

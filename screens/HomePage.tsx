@@ -21,7 +21,7 @@ const PostListRow: FC<{ post: Post, onItemClick: (id:String)=>void }> = ({ post,
 }
 
 
-const Home: FC<{ user:String, navigation: any, route: any }> = ({ user, navigation, route }) => {
+const Home: FC<{ user:User, navigation: any, route: any }> = ({ user, navigation, route }) => {
     const [data, setData] = useState<Array<Post>>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -37,8 +37,7 @@ const Home: FC<{ user:String, navigation: any, route: any }> = ({ user, navigati
 
     const reloadData = async ()=>{
         setIsLoading(true)
-        const postData = await getPostById(user)
-        setData(postData)
+        console.log(user)
         setIsLoading(false)
     }
 

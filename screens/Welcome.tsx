@@ -1,13 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import { FunctionComponent } from "react";
 import styled from "styled-components/native";
-import { Field, Form, Formik } from "formik";
 import { container } from "../components/shared";
-import { Button,Text, TextInput, View, StyleSheet } from "react-native";
-import { GoogleLoginButton } from 'ts-react-google-login-component';
+import { Text, StyleSheet } from "react-native";
 import { Entypo} from "@expo/vector-icons"
 import * as ImagePicker from 'expo-image-picker';
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 
 
 
